@@ -1,9 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { PostModule } from './post/post.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './common/configs/configuration';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [],
+  imports: [
+    DatabaseModule,
+    UserModule,
+    AuthModule,
+    PostModule,
+    ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
