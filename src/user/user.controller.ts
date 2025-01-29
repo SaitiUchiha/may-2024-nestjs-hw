@@ -9,7 +9,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto, UserResponseDto } from './dto/user.dto';
+import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/user.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
