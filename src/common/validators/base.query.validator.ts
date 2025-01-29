@@ -3,6 +3,7 @@ import { IsEnum, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class BaseQueryDto {
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsNumberString()
   sort: string;
 

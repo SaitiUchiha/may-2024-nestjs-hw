@@ -79,3 +79,10 @@ export class SingUpDto {
   @ApiProperty()
   createdAt: Date;
 }
+
+export class UserItemDto extends SingUpDto {
+  @ApiProperty()
+  firstName: string;
+  @ApiProperty()
+  age: number;
+}
