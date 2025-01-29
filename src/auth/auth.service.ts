@@ -15,7 +15,7 @@ export class AuthService {
 
   async signUpUser(body: UserDto) {
     const password = await bcrypt.hash(body.password, 10);
-    const user = await this.userRepository.save(
+    const user: User = await this.userRepository.save(
       this.userRepository.create({
         ...body,
         password,

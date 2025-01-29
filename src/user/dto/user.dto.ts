@@ -1,7 +1,7 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import {
   IsEmail,
-  IsNotEmpty,
+  IsNotEmpty, IsNumber,
   IsOptional,
   IsString,
   Matches,
@@ -16,12 +16,19 @@ export class UserDto {
   @ApiProperty({ required: true })
   @Transform(({ value }) => value.trim())
   email: string;
-  @ApiProperty({ required: true })
+  @IsString()
+  @Matches(/^\S*(?=\S{8,})(?=\S*[A-Z])(?=\S*[\d])\S*$/, {
+    message: 'Password must have 1 upper case',
+  })
+  @IsNotEmpty()
   password: string;
   @IsOptional()
+  @IsString()
   @ApiProperty({ required: false })
   firstName: string;
-  @ApiProperty({ required: true })
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty()
   age: number;
   @ApiProperty({
     default: 'Lviv',
@@ -30,11 +37,6 @@ export class UserDto {
   })
   @IsOptional()
   city: string;
-}
-
-export class PersonalDto {
-  brithDate: string;
-  lang: string;
 }
 
 export class ForgotPassword {
@@ -47,7 +49,7 @@ export class ForgotPassword {
   repeatPassword: string;
 }
 
-export class UserResponseDto extends IntersectionType(UserDto, PersonalDto) {
+export class UserResponseDto extends IntersectionType(UserDto) {
   id: number;
   status: boolean;
 }
@@ -67,4 +69,13 @@ export class UserQueryDto {
   sort: string;
   @ApiProperty({ required: true })
   page: string;
+}
+
+export class SingUpDto {
+  @ApiProperty()
+  id: string;
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  createdAt: Date;
 }

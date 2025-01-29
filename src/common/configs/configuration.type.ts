@@ -1,11 +1,6 @@
 export type ConfigurationType = {
-  app: AppConfig;
-  database: PostgresConfig;
-};
-
-export type AppConfig = {
   port: number;
-  host: string;
+  database: PostgresConfig;
 };
 
 export type PostgresConfig = {
