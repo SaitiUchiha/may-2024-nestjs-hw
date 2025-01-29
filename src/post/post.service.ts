@@ -5,9 +5,16 @@ import {
   PostQueryDto,
   PostResponseDto,
 } from './dto/post.dto';
+import { DeleteResult, Repository } from 'typeorm';
+import { Post } from '../database/entities/post.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PostService {
+  constructor(
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
+  ) {}
   private postsList: any[] = [];
   create(createPostDto: PostDto) {
     const index = new Date().valueOf();
@@ -18,27 +25,35 @@ export class PostService {
     return this.postsList[0] as PostResponseDto;
   }
 
-  findAll(data: PostQueryDto) {
+  findAll() {
     return this.postsList as PostResponseDto[];
   }
 
-  findOne(id: number) {
-    return this.postsList.find((post) => post.id === id);
+  findPostByID(id: string): Promise<Post | null> {
+    return this.postRepository.findOneBy({ id: id });
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto): Promise<PostDto> {
-    const post:PostDto = await this.findOne(id);
-    const newPost = updatePostDto;
-    post.firstName = newPost.firstName;
-    post.body = newPost.body;
-    return post;
-  }
+  async update(id: string, updatePostDto: UpdatePostDto) {
+    try {
+      const editedPost = await this.postRepository.findOneBy({ id: id });
 
-  async remove(id: number): Promise<void> {
-    const post = await this.postsList.find((post) => post.id === id);
-    if (!post) {
-      throw new NotFoundException('Post not found');
+      if (!editedPost) {
+        throw new NotFoundException('Post not found');
+      }
+
+      editedPost.body = updatePostDto.body;
+      editedPost.firstName = updatePostDto.firstName;
+      editedPost.email = updatePostDto.email;
+
+      await this.postRepository.save(editedPost);
+
+      return editedPost;
+    } catch (error) {
+      console.log(error);
     }
-    delete post.id;
+  }
+
+  async remove(id: string): Promise<DeleteResult> {
+    return await this.postRepository.delete({ id: id });
   }
 }

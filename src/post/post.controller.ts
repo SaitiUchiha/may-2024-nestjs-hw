@@ -26,22 +26,22 @@ export class PostController {
   }
 
   @Get('/list')
-  findAll(@Query() query: PostQueryDto) {
-    return this.postService.findAll(query);
+  findAll() {
+    return this.postService.findAll();
   }
 
   @Get(':id')
   findOnePost(@Param('id') id: string) {
-    return this.postService.findOne(+id) as PostResponseDto;
+    return this.postService.findPostByID(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
+    return this.postService.update(id, updatePostDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+    return this.postService.remove(id);
   }
 }
