@@ -30,31 +30,68 @@ export class UserService {
     return this.usersList[0] as UserResponseDto;
   }
 
-  async findAll(query?: BaseQueryDto): Promise<PaginatedDto<UserItemDto>> {
+  async findAll(query?: BaseQueryDto): Promise<any> {
     const options = {
       page: query?.page || 1,
       limit: query?.limit || 10,
     };
-    const queryBuilder = await this.userRepository.createQueryBuilder('user');
+    // простий варіант виведення даних з великим кодом
+    // const queryBuilder = await this.userRepository.createQueryBuilder('user');
+    // queryBuilder
+    //
+    //   .select('email, "firstName", age, id, "createdAt"')
+    //   .where({ isActive: false });
+    //
+    // if (query?.search) {
+    //   queryBuilder.andWhere(`LOWER("firstName") LIKE '%${query.search}%'`);
+    // }
+    //
+    // const [pagination, rawEntities] = await paginateRawAndEntities(
+    //   queryBuilder,
+    //   options,
+    // );
+    // return {
+    //
+    //   page: pagination.meta.currentPage,
+    //   pages: Number(pagination.meta.totalPages),
+    //   countItems: Number(pagination.meta.totalItems),
+    //   entities: rawEntities as [UserItemDto],
+    // };
 
-    queryBuilder
-      .select('email, "firstName", age, id, "createdAt"')
-      .where({ isActive: false });
+    // трохи важчий варіант виведення даних з великим кодом
+    // const queryBuilder = await this.userRepository
+    //   .createQueryBuilder('user')
+    //   .leftJoinAndSelect('user.posts', 'post')
+    //   .where('"isActive" = false')
+    //   .skip((options.page - 1) * options.limit)
+    //   .take(options.limit);
+    // const total = await queryBuilder.getCount();
+    // return {
+    //   page: options.page,
+    //   pages: Math.ceil( total / options.limit),
+    //   countItems:  total,
+    //   entities: await queryBuilder.getMany(),
+    // };
 
-    if (query?.search) {
-      queryBuilder.andWhere(`LOWER("firstName") LIKE '%${query.search}%'`);
-    }
-
-    const [pagination, rawEntities] = await paginateRawAndEntities(
-      queryBuilder,
-      options,
-    );
+    const [ entities, total] = await this.userRepository.findAndCount({
+      where: { isActive: false },
+      select: {
+        email: true,
+        firstName: true,
+        id: true,
+      },
+      relations: {
+        posts: true,
+      },
+      skip: (options.page - 1) * options.limit,
+      take: options.limit,
+    })
 
     return {
-      page: pagination.meta.currentPage,
-      pages: Number(pagination.meta.totalPages),
-      countItems: Number(pagination.meta.totalItems),
-      entities: rawEntities as [UserItemDto],
+      page: options.page,
+      pages: Math.ceil( total / options.limit),
+      countItems:  total,
+      entities: entities,
     };
   }
 

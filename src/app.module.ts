@@ -8,9 +8,13 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './common/configs/configuration';
 import { DatabaseModule } from './database/database.module';
 import { TypeOrmConfigService } from './database/database.service';
+import { RedisModule } from '@webeleon/nestjs-redis';
 
 @Module({
   imports: [
+    RedisModule.forRoot({
+      url: 'redis://localhost:6379',
+    }),
     UserModule,
     AuthModule,
     PostModule,

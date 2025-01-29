@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { UpdateAuthDto } from './dto/auth.dto';
 import { SingUpDto, UserDto } from '../user/dto/user.dto';
 import { ApiOkResponse } from '@nestjs/swagger';
 
