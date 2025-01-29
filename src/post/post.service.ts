@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { PostDto } from './dto/post.dto';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { PostDto, UpdatePostDto } from './dto/post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
+import { BaseQueryDto } from '../common/validators/base.query.validator';
 import { Post } from '../database/entities/post.entity';
 
 @Injectable()
@@ -26,19 +27,95 @@ export class PostService {
     }
   }
 
-  findAll() {
-    return `This action returns all post`;
+  async findAll(query?: BaseQueryDto): Promise<any> {
+    const options = {
+      page: query?.page || 1,
+      limit: query?.limit || 10,
+    };
+    // простий варіант виведення даних з великим кодом
+    // const queryBuilder = await this.postRepository.createQueryBuilder('post');
+    // queryBuilder
+    //
+    //   .select('email, "firstName", age, id, "createdAt"')
+    //   .where({ isActive: false });
+    //
+    // if (query?.search) {
+    //   queryBuilder.andWhere(`LOWER("firstName") LIKE '%${query.search}%'`);
+    // }
+    //
+    // const [pagination, rawEntities] = await paginateRawAndEntities(
+    //   queryBuilder,
+    //   options,
+    // );
+    // return {
+    //
+    //   page: pagination.meta.currentPage,
+    //   pages: Number(pagination.meta.totalPages),
+    //   countItems: Number(pagination.meta.totalItems),
+    //   entities: rawEntities as [PostItemDto],
+    // };
+
+    // трохи важчий варіант виведення даних з великим кодом
+    // const queryBuilder = await this.postRepository
+    //   .createQueryBuilder('post')
+    //   .leftJoinAndSelect('post.posts', 'post')
+    //   .where('"isActive" = false')
+    //   .skip((options.page - 1) * options.limit)
+    //   .take(options.limit);
+    // const total = await queryBuilder.getCount();
+    // return {
+    //   page: options.page,
+    //   pages: Math.ceil( total / options.limit),
+    //   countItems:  total,
+    //   entities: await queryBuilder.getMany(),
+    // };
+
+    const [ entities, total] = await this.postRepository.findAndCount({
+      select: {
+        title: true,
+        description: true,
+        id: true,
+      },
+      relations: {
+        user: true,
+      },
+      skip: (options.page - 1) * options.limit,
+      take: options.limit,
+    })
+
+    return {
+      page: options.page,
+      pages: Math.ceil( total / options.limit),
+      countItems:  total,
+      entities: entities,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  findPostByID(id: string): Promise<Post | null> {
+    return this.postRepository.findOneBy({ id: id });
   }
 
-  update(id: number, updatePostDto: PostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: string, updatePostDto: UpdatePostDto) {
+    try {
+      const editedPost = await this.postRepository.findOneBy({ id: id });
+
+      if (!editedPost) {
+        throw new NotFoundException('Post not found');
+      }
+
+      editedPost.title = updatePostDto.title;
+      editedPost.description = updatePostDto.description;
+      editedPost.body = updatePostDto.body;
+
+      await this.postRepository.save(editedPost);
+
+      return editedPost;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: string): Promise<DeleteResult> {
+    return await this.postRepository.delete({ id: id });
   }
 }
