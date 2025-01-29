@@ -1,11 +1,11 @@
+import { BaseEntity } from './base.entity';
 import {
-  JoinColumn,
-  ManyToOne,
   Column,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseEntity } from './base.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -13,27 +13,21 @@ export class Post extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text', { nullable: true })
+  @Column('text')
   title: string;
 
   @Column('text', { nullable: true })
-  body: string;
+  description?: string;
 
-  @Column('text', { nullable: false, unique: true })
-  email: string;
-
-  @Column('text', { nullable: false })
-  password: string;
-
-  @Column({ default: false })
-  isActive: boolean;
+  @Column('text', { nullable: true })
+  body?: string;
 
   @Column()
-  userId: string;
+  user_id: string;
 
   @ManyToOne(() => User, (entity) => entity.posts, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user?: User;
 }

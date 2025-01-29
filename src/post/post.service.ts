@@ -1,65 +1,44 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
-import { PostDto, UpdatePostDto } from './dto/post.dto';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { PostDto } from './dto/post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Post } from '../database/entities/post.entity';
-import { DeleteResult, Repository } from 'typeorm';
 
 @Injectable()
 export class PostService {
+  private logger: Logger;
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
   ) {}
-
-  async create(createPostDto: PostDto) {
+  async create(data: PostDto) {
     try {
       const post = await this.postRepository.save(
         this.postRepository.create({
-          ...createPostDto,
-          // user_id: '31c3b9b1-934a-4bbb-8039-7241f4852f17',
+          ...data,
+          user_id: '9e50a1c4-0880-4cd4-9813-965b2eaa6c17',
         }),
       );
       return post;
     } catch (err) {
-      // this.logger.error(err);
-      throw new BadRequestException('Creat post failed.');
+      this.logger.error(err);
+      throw new BadRequestException('Creation of the post failed.');
     }
   }
 
-  // findAll() {
-  //   return this.postsList as PostResponseDto[];
-  // }
-
-  findPostByID(id: string): Promise<Post | null> {
-    return this.postRepository.findOneBy({ id: id });
+  findAll() {
+    return `This action returns all post`;
   }
 
-  async update(id: string, updatePostDto: UpdatePostDto) {
-    try {
-      const editedPost = await this.postRepository.findOneBy({ id: id });
-
-      if (!editedPost) {
-        throw new NotFoundException('Post not found');
-      }
-
-      editedPost.title = updatePostDto.title;
-      editedPost.body = updatePostDto.body;
-      editedPost.email = updatePostDto.email;
-
-      await this.postRepository.save(editedPost);
-
-      return editedPost;
-    } catch (error) {
-      console.log(error);
-    }
+  findOne(id: number) {
+    return `This action returns a #${id} post`;
   }
 
-  async remove(id: string): Promise<DeleteResult> {
-    return await this.postRepository.delete({ id: id });
+  update(id: number, updatePostDto: PostDto) {
+    return `This action updates a #${id} post`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} post`;
   }
 }

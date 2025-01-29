@@ -7,14 +7,18 @@ import { PostModule } from './post/post.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './common/configs/configuration';
 import { DatabaseModule } from './database/database.module';
+import { TypeOrmConfigService } from './database/database.service';
 
 @Module({
   imports: [
-    DatabaseModule,
     UserModule,
     AuthModule,
     PostModule,
-    ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
+    }),
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
