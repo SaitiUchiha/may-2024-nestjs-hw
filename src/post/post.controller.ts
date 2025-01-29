@@ -7,10 +7,9 @@ import {
   Param,
   Delete,
   HttpStatus,
-  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { PostDto, PostQueryDto, PostResponseDto } from './dto/post.dto';
+import { PostDto, PostResponseDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/post.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
