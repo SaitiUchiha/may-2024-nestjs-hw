@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 
 export class PostDto {
   @ApiProperty({ required: true })
@@ -11,11 +11,9 @@ export class PostDto {
   body: string;
 }
 
-export class PostResponseDto extends PostDto {
-  @ApiProperty({ required: true })
-  body: string;
-  @ApiProperty({ required: true, default: 0 })
-  bookmarked: number;
+export class PostResponseDto extends IntersectionType(PostDto) {
+  id: number;
+  status: boolean;
 }
 
 export class UpdatePostDto {

@@ -9,7 +9,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto, UserResponseDto } from './dto/user.dto';
+import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/user.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -20,7 +20,7 @@ export class UserController {
 
   @ApiResponse({ status: HttpStatus.CREATED, type: UserDto })
   @Post('/create')
-  createUser(@Body() createUserDto: UserResponseDto) {
+  createUser(@Body() createUserDto: UserDto) {
     return this.userService.create(createUserDto);
   }
 

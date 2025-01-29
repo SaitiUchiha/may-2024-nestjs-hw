@@ -1,13 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  PostDto,
-  UpdatePostDto,
-  PostQueryDto,
-  PostResponseDto,
-} from './dto/post.dto';
-import { DeleteResult, Repository } from 'typeorm';
-import { Post } from '../database/entities/post.entity';
+import { PostDto, UpdatePostDto, PostResponseDto } from './dto/post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from '../database/entities/post.entity';
+import { DeleteResult, Repository } from 'typeorm';
 
 @Injectable()
 export class PostService {
@@ -15,7 +10,9 @@ export class PostService {
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
   ) {}
+
   private postsList: any[] = [];
+
   create(createPostDto: PostDto) {
     const index = new Date().valueOf();
     this.postsList.push({
@@ -41,8 +38,8 @@ export class PostService {
         throw new NotFoundException('Post not found');
       }
 
-      editedPost.body = updatePostDto.body;
       editedPost.firstName = updatePostDto.firstName;
+      editedPost.body = updatePostDto.body;
       editedPost.email = updatePostDto.email;
 
       await this.postRepository.save(editedPost);
