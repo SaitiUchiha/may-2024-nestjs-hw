@@ -12,6 +12,7 @@ import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/user.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BaseQueryDto } from '../common/validators/base.query.validator';
 
 @ApiTags('User')
 @Controller('user')
@@ -25,8 +26,8 @@ export class UserController {
   }
 
   @Get('/list')
-  findAll() {
-    return this.userService.findAll();
+  findAll(data: BaseQueryDto) {
+    return this.userService.findAll(data);
   }
 
   @Get(':id')

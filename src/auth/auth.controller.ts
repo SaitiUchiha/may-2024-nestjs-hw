@@ -9,12 +9,13 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { UserDto } from '../user/dto/user.dto';
+import { SingUpDto, UserDto } from '../user/dto/user.dto';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  @ApiOkResponse({ type: SingUpDto })
   @Post('/signUp')
   create(@Body() body: UserDto) {
     return this.authService.signUpUser(body);

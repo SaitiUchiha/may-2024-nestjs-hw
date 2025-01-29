@@ -3,6 +3,7 @@ import { UserDto, UpdateUserDto, UserResponseDto } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../database/entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
+import { BaseQueryDto } from '../common/validators/base.query.validator';
 
 @Injectable()
 export class UserService {
@@ -22,7 +23,7 @@ export class UserService {
     return this.usersList[0] as UserResponseDto;
   }
 
-  findAll() {
+  findAll(data:BaseQueryDto) {
     return this.usersList as UserResponseDto[];
   }
 
