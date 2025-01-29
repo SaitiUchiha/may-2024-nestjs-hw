@@ -20,7 +20,7 @@ export class PostController {
 
   @ApiResponse({ status: HttpStatus.CREATED, type: PostDto })
   @Post('/create')
-  createPost(@Body() createPostDto: PostResponseDto) {
+  createPost(@Body() createPostDto: PostDto) {
     return this.postService.create(createPostDto);
   }
 

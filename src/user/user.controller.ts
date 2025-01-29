@@ -20,7 +20,7 @@ export class UserController {
 
   @ApiResponse({ status: HttpStatus.CREATED, type: UserDto })
   @Post('/create')
-  createUser(@Body() createUserDto: UserResponseDto) {
+  createUser(@Body() createUserDto: UserDto) {
     return this.userService.create(createUserDto);
   }
 
