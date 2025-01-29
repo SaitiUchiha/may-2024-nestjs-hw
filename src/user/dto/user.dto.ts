@@ -17,9 +17,9 @@ export class UserDto {
   @Transform(({ value }) => value.trim())
   email: string;
   @IsString()
-  @Matches(/^\S*(?=\S{8,})(?=\S*[A-Z])(?=\S*[\d])\S*$/, {
-    message: 'Password must have 1 upper case',
-  })
+  // @Matches(/^\S*(?=\S{8,})(?=\S*[A-Z])(?=\S*[\d])\S*$/, {
+  //   message: 'Password must have 1 upper case',
+  // })
   @IsNotEmpty()
   password: string;
   @IsOptional()
