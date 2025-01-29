@@ -11,15 +11,19 @@ export class PostService {
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  private postsList: any[] = [];
-
-  create(createPostDto: PostDto) {
-    const index = new Date().valueOf();
-    this.postsList.push({
-      ...createPostDto,
-      id: index,
-    });
-    return this.postsList[0] as PostResponseDto;
+  async create(createPostDto: PostDto) {
+    try {
+      const post = await this.postRepository.save(
+        this.postRepository.create({
+          ...createPostDto,
+          user_id: '31c3b9b1-934a-4bbb-8039-7241f4852f17',
+        }),
+      );
+      return post;
+    } catch (err) {
+      this.logger.error(err);
+      throw new BadRequestException('Creat post failed.');
+    }
   }
 
   findAll() {
@@ -38,7 +42,7 @@ export class PostService {
         throw new NotFoundException('Post not found');
       }
 
-      editedPost.firstName = updatePostDto.firstName;
+      editedPost.title = updatePostDto.title;
       editedPost.body = updatePostDto.body;
       editedPost.email = updatePostDto.email;
 

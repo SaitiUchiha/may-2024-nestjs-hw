@@ -2,12 +2,16 @@ import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 
 export class PostDto {
   @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
   email: string;
   @ApiProperty({ required: true })
-  password: string;
-  @ApiProperty({ required: false })
-  firstName: string;
+  @IsString()
+  @IsNotEmpty()
+  title: string;
   @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
   body: string;
 }
 
@@ -19,7 +23,7 @@ export class PostResponseDto extends IntersectionType(PostDto) {
 export class UpdatePostDto {
   email: string;
   password: string;
-  firstName: string;
+  title: string;
   body: string;
 }
 
