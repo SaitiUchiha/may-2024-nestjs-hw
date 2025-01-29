@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  JoinColumn,
+  ManyToOne,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { User } from './user.entity';
 
@@ -8,7 +14,7 @@ export class Post extends BaseEntity {
   id: string;
 
   @Column('text', { nullable: true })
-  firstName: string;
+  title: string;
 
   @Column('text', { nullable: true })
   body: string;
@@ -30,5 +36,4 @@ export class Post extends BaseEntity {
   })
   @JoinColumn({ name: 'userId' })
   user?: User;
-
 }

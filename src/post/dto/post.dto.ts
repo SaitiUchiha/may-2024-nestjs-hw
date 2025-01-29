@@ -1,4 +1,5 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class PostDto {
   @ApiProperty({ required: true })

@@ -24,10 +24,10 @@ export class PostController {
     return this.postService.create(createPostDto);
   }
 
-  @Get('/list')
-  findAll() {
-    return this.postService.findAll();
-  }
+  // @Get('/list')
+  // findAll() {
+  //   return this.postService.findAll();
+  // }
 
   @Get(':id')
   findOnePost(@Param('id') id: string) {

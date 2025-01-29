@@ -1,11 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserDto, UpdateUserDto, UserResponseDto, UserItemDto } from './dto/user.dto';
+import {
+  UserDto,
+  UpdateUserDto,
+  UserResponseDto,
+  UserItemDto,
+} from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../database/entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { BaseQueryDto } from '../common/validators/base.query.validator';
 import { paginateRawAndEntities } from 'nestjs-typeorm-paginate';
-import {PaginatedDto} from "../common/interface/response.interface";
+import { PaginatedDto } from '../common/interface/response.interface';
 
 @Injectable()
 export class UserService {
@@ -33,16 +38,16 @@ export class UserService {
     const queryBuilder = await this.userRepository.createQueryBuilder('user');
 
     queryBuilder
-        .select('email, "firstName", age, id, "createdAt"')
-        .where({ isActive: false });
+      .select('email, "firstName", age, id, "createdAt"')
+      .where({ isActive: false });
 
     if (query?.search) {
       queryBuilder.andWhere(`LOWER("firstName") LIKE '%${query.search}%'`);
     }
 
     const [pagination, rawEntities] = await paginateRawAndEntities(
-        queryBuilder,
-        options,
+      queryBuilder,
+      options,
     );
 
     return {

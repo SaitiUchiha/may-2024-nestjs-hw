@@ -1,5 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PostDto, UpdatePostDto, PostResponseDto } from './dto/post.dto';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { PostDto, UpdatePostDto } from './dto/post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from '../database/entities/post.entity';
 import { DeleteResult, Repository } from 'typeorm';
@@ -16,19 +21,19 @@ export class PostService {
       const post = await this.postRepository.save(
         this.postRepository.create({
           ...createPostDto,
-          user_id: '31c3b9b1-934a-4bbb-8039-7241f4852f17',
+          // user_id: '31c3b9b1-934a-4bbb-8039-7241f4852f17',
         }),
       );
       return post;
     } catch (err) {
-      this.logger.error(err);
+      // this.logger.error(err);
       throw new BadRequestException('Creat post failed.');
     }
   }
 
-  findAll() {
-    return this.postsList as PostResponseDto[];
-  }
+  // findAll() {
+  //   return this.postsList as PostResponseDto[];
+  // }
 
   findPostByID(id: string): Promise<Post | null> {
     return this.postRepository.findOneBy({ id: id });

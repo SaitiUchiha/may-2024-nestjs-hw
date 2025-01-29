@@ -1,7 +1,8 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import {
   IsEmail,
-  IsNotEmpty, IsNumber,
+  IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Matches,
