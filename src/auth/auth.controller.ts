@@ -21,7 +21,7 @@ export class AuthController {
     return this.authService.signUpUser(body);
   }
 
-  @Get()
+  @Get('/list')
   findAll() {
     return this.authService.findAllAuth();
   }

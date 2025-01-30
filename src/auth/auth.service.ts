@@ -1,6 +1,7 @@
 import {
   BadRequestException,
-  Injectable, NotFoundException,
+  Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,8 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 
-import { UpdateAuthDto } from './dto/auth.dto';
-import { UpdateUserDto, UserDto } from '../user/dto/user.dto';
+import { AuthDto, UpdateAuthDto } from './dto/auth.dto';
 import { User } from '../database/entities/user.entity';
 import { BaseQueryDto } from '../common/validators/base.query.validator';
 
@@ -24,7 +24,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signUpUser(body: UserDto): Promise<{ accessToken: string }> {
+  async signUpUser(body: AuthDto): Promise<{ accessToken: string }> {
     const findUser = await this.userRepository.findOne({
       where: { email: body.email },
     });
@@ -119,7 +119,7 @@ export class AuthService {
     return this.userRepository.findOneBy({ id: id });
   }
 
-  async updateAuth(id: string, updateUserDto: UpdateAuthDto) {
+  async updateAuth(id: string, updateAuthDto: UpdateAuthDto) {
     try {
       const editedUser = await this.userRepository.findOneBy({ id: id });
 
@@ -127,9 +127,9 @@ export class AuthService {
         throw new NotFoundException('User not found');
       }
 
-      editedUser.firstName = updateUserDto.firstName;
-      editedUser.age = updateUserDto.age;
-      editedUser.email = updateUserDto.email;
+      editedUser.firstName = updateAuthDto.firstName;
+      editedUser.age = updateAuthDto.age;
+      editedUser.email = updateAuthDto.email;
 
       await this.userRepository.save(editedUser);
 
