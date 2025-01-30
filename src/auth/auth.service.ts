@@ -1,17 +1,18 @@
 import {
   BadRequestException,
-  Injectable,
+  Injectable, NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 
 import { UpdateAuthDto } from './dto/auth.dto';
-import { UserDto } from '../user/dto/user.dto';
+import { UpdateUserDto, UserDto } from '../user/dto/user.dto';
 import { User } from '../database/entities/user.entity';
+import { BaseQueryDto } from '../common/validators/base.query.validator';
 
 @Injectable()
 export class AuthService {
@@ -86,19 +87,59 @@ export class AuthService {
     return this.jwtService.sign({ id: userId, email: userEmail });
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async findAllAuth(query?: BaseQueryDto): Promise<any> {
+    const options = {
+      page: query?.page || 1,
+      limit: query?.limit || 10,
+    };
+
+    const [entities, total] = await this.userRepository.findAndCount({
+      where: { isActive: false },
+      select: {
+        email: true,
+        firstName: true,
+        id: true,
+      },
+      relations: {
+        posts: true,
+      },
+      skip: (options.page - 1) * options.limit,
+      take: options.limit,
+    });
+
+    return {
+      page: options.page,
+      pages: Math.ceil(total / options.limit),
+      countItems: total,
+      entities: entities,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  findAuthByID(id: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ id: id });
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async updateAuth(id: string, updateUserDto: UpdateAuthDto) {
+    try {
+      const editedUser = await this.userRepository.findOneBy({ id: id });
+
+      if (!editedUser) {
+        throw new NotFoundException('User not found');
+      }
+
+      editedUser.firstName = updateUserDto.firstName;
+      editedUser.age = updateUserDto.age;
+      editedUser.email = updateUserDto.email;
+
+      await this.userRepository.save(editedUser);
+
+      return editedUser;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async removeAuth(id: string): Promise<DeleteResult> {
+    return await this.userRepository.delete({ id: id });
   }
 }

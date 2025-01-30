@@ -37,43 +37,6 @@ export class PostService {
       page: query?.page || 1,
       limit: query?.limit || 10,
     };
-    // простий варіант виведення даних з великим кодом
-    // const queryBuilder = await this.postRepository.createQueryBuilder('post');
-    // queryBuilder
-    //
-    //   .select('email, "firstName", age, id, "createdAt"')
-    //   .where({ isActive: false });
-    //
-    // if (query?.search) {
-    //   queryBuilder.andWhere(`LOWER("firstName") LIKE '%${query.search}%'`);
-    // }
-    //
-    // const [pagination, rawEntities] = await paginateRawAndEntities(
-    //   queryBuilder,
-    //   options,
-    // );
-    // return {
-    //
-    //   page: pagination.meta.currentPage,
-    //   pages: Number(pagination.meta.totalPages),
-    //   countItems: Number(pagination.meta.totalItems),
-    //   entities: rawEntities as [PostItemDto],
-    // };
-
-    // трохи важчий варіант виведення даних з великим кодом
-    // const queryBuilder = await this.postRepository
-    //   .createQueryBuilder('post')
-    //   .leftJoinAndSelect('post.posts', 'post')
-    //   .where('"isActive" = false')
-    //   .skip((options.page - 1) * options.limit)
-    //   .take(options.limit);
-    // const total = await queryBuilder.getCount();
-    // return {
-    //   page: options.page,
-    //   pages: Math.ceil( total / options.limit),
-    //   countItems:  total,
-    //   entities: await queryBuilder.getMany(),
-    // };
 
     const [entities, total] = await this.postRepository.findAndCount({
       select: {
