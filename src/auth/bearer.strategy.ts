@@ -1,9 +1,9 @@
 import { PassportStrategy } from '@nestjs/passport';
-import {Injectable, UnauthorizedException} from '@nestjs/common';
-import { Strategy} from 'passport-http-bearer'
-import {JwtService} from "@nestjs/jwt";
-import {InjectRedisClient, RedisClient} from "@webeleon/nestjs-redis";
-import {AuthService} from "./auth.service";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Strategy } from 'passport-http-bearer';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class BearerStrategy extends PassportStrategy(Strategy, 'bearer') {
@@ -22,12 +22,14 @@ export class BearerStrategy extends PassportStrategy(Strategy, 'bearer') {
         throw new UnauthorizedException();
       }
       await this.jwtService.verifyAsync(token);
-      const user = await this.authService.validateUser(decodeToken.id, decodeToken.email);
+      const user = await this.authService.validateUser(
+        decodeToken.id,
+        decodeToken.email,
+      );
       return user;
     } catch (e) {
       console.log(e);
       throw new UnauthorizedException();
     }
-
   }
 }

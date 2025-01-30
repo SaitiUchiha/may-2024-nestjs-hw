@@ -19,7 +19,6 @@ export class PostDto {
   body: string;
 }
 
-
 export class UserResponseDto extends IntersectionType(UserDto) {
   id: number;
   favorites: boolean;

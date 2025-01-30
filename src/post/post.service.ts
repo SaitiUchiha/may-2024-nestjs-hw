@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { PostDto, UpdatePostDto } from './dto/post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
@@ -70,7 +75,7 @@ export class PostService {
     //   entities: await queryBuilder.getMany(),
     // };
 
-    const [ entities, total] = await this.postRepository.findAndCount({
+    const [entities, total] = await this.postRepository.findAndCount({
       select: {
         title: true,
         description: true,
@@ -81,12 +86,12 @@ export class PostService {
       },
       skip: (options.page - 1) * options.limit,
       take: options.limit,
-    })
+    });
 
     return {
       page: options.page,
-      pages: Math.ceil( total / options.limit),
-      countItems:  total,
+      pages: Math.ceil(total / options.limit),
+      countItems: total,
       entities: entities,
     };
   }

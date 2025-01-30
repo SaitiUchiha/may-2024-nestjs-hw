@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -16,7 +20,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRedisClient() private readonly redisClient: RedisClient,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async signUpUser(body: UserDto): Promise<{ accessToken: string }> {
@@ -39,11 +43,14 @@ export class AuthService {
     const token = await this.singIn(user.id, user.email);
 
     // await this.redisClient.setEx(this.redisUserKey, 2 * 60, JSON.stringify(user));
-    await this.redisClient.setEx(`${this.redisUserKey}-${user.id}`, 24 * 60 * 60, token);
+    await this.redisClient.setEx(
+      `${this.redisUserKey}-${user.id}`,
+      24 * 60 * 60,
+      token,
+    );
 
     // //logout
     // await this.redisClient.del(`${this.redisUserKey}-${user.id}`);
-
 
     // // @ts-ignore
     // const userInRedis = JSON.parse(await this.redisClient.get(this.redisUserKey));
@@ -67,7 +74,7 @@ export class AuthService {
       where: {
         id: userId,
         email: userEmail,
-      }
+      },
     });
     if (!user) {
       throw new UnauthorizedException();
@@ -75,8 +82,8 @@ export class AuthService {
     return user;
   }
 
-  async singIn(userId:string, userEmail:string): Promise<string> {
-    return this.jwtService.sign({id: userId, email: userEmail});
+  async singIn(userId: string, userEmail: string): Promise<string> {
+    return this.jwtService.sign({ id: userId, email: userEmail });
   }
 
   findAll() {

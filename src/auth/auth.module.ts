@@ -20,8 +20,8 @@ import { BearerStrategy } from './bearer.strategy';
     JwtModule.register({
       global: true,
       secret: 'Secret',
-      signOptions: { expiresIn: '1d'},
-    })
+      signOptions: { expiresIn: '1d' },
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, BearerStrategy],

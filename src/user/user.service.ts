@@ -11,6 +11,8 @@ import { DeleteResult, Repository } from 'typeorm';
 import { BaseQueryDto } from '../common/validators/base.query.validator';
 import { paginateRawAndEntities } from 'nestjs-typeorm-paginate';
 import { PaginatedDto } from '../common/interface/response.interface';
+import { PATH_TO_IMAGE } from '../common/utils/upload.utils';
+import * as fs from 'node:fs';
 
 @Injectable()
 export class UserService {
@@ -73,7 +75,7 @@ export class UserService {
     //   entities: await queryBuilder.getMany(),
     // };
 
-    const [ entities, total] = await this.userRepository.findAndCount({
+    const [entities, total] = await this.userRepository.findAndCount({
       where: { isActive: false },
       select: {
         email: true,
@@ -85,17 +87,38 @@ export class UserService {
       },
       skip: (options.page - 1) * options.limit,
       take: options.limit,
-    })
+    });
 
     return {
       page: options.page,
-      pages: Math.ceil( total / options.limit),
-      countItems:  total,
+      pages: Math.ceil(total / options.limit),
+      countItems: total,
       entities: entities,
     };
   }
 
   findByID(id: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ id: id });
+  }
+
+  uploadOneImgByID(id: string, fileName: any): Promise<User | null> {
+    if (fileName) {
+      const avatarPath = `${PATH_TO_IMAGE}/${fileName}`;
+      console.log(avatarPath); /// { avatar: avatarPath }
+    }
+    return this.userRepository.findOneBy({ id: id });
+  }
+
+  uploadManyImgByID(id: string, body: any): Promise<User | null> {
+    return this.userRepository.findOneBy({ id: id });
+  }
+
+  deleteImgByID(id: string, body: any): Promise<User | null> {
+    try {
+      fs.unlinkSync(`./upload.${PATH_TO_IMAGE}/gallery/${body.filename}`);
+    } catch (err) {
+      console.log(err);
+    }
     return this.userRepository.findOneBy({ id: id });
   }
 

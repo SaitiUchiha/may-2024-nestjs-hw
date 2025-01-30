@@ -2,6 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as express from 'express';
+import * as process from 'process';
+import { join } from 'path';
+import { PATH_TO_IMAGE } from './common/utils/upload.utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +16,8 @@ async function bootstrap() {
       // disableErrorMessages: true,
     }),
   );
+  app.use(`${PATH_TO_IMAGE}`, express.static(join(process.cwd(), 'upload')));
+
   const config = new DocumentBuilder()
     .setTitle('Nest module HW example')
     .setDescription('The may-2024 API description')
